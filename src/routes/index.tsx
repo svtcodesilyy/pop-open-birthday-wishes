@@ -1,7 +1,9 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { BirthdayLetter } from "@/components/BirthdayLetter";
+import { parseLetterSearch } from "@/lib/letter-search";
 
 export const Route = createFileRoute("/")({
+  validateSearch: parseLetterSearch,
   head: () => ({
     meta: [
       { title: "Uma carta para você — Feliz Aniversário" },
@@ -12,5 +14,11 @@ export const Route = createFileRoute("/")({
       { name: "twitter:card", content: "summary_large_image" },
     ],
   }),
-  component: BirthdayLetter,
+  component: Index,
 });
+
+function Index() {
+  const { para, de, msg } = Route.useSearch();
+  const shared = Boolean(para || de || msg);
+  return <BirthdayLetter name={para} signature={de} message={msg} showEditLink={!shared} />;
+}

@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "react";
+import { Link } from "@tanstack/react-router";
 import {
   playMelody,
   playPaperRustle,
@@ -13,7 +14,16 @@ type Confetto = { id: number; left: number; delay: number; duration: number; col
 
 const wait = (ms: number) => new Promise((r) => setTimeout(r, ms));
 
-export function BirthdayLetter() {
+export const DEFAULT_MESSAGE = `Hoje o mundo ficou um pouquinho mais bonito, porque é o dia de celebrar você.
+
+Que este novo ano venha cheio de sorrisos sinceros, abraços apertados, sonhos realizados e momentos que valham a pena guardar para sempre.
+
+Obrigado por ser essa pessoa tão especial. Você merece todo o amor e toda a felicidade do mundo.`;
+
+type Props = { name?: string | undefined; signature?: string | undefined; message?: string | undefined; showEditLink?: boolean };
+
+export function BirthdayLetter({ name, signature, message, showEditLink }: Props) {
+  const paragraphs = (message?.trim() || DEFAULT_MESSAGE).split(/\n\s*\n/).map((p) => p.trim()).filter(Boolean);
   const [flapOpen, setFlapOpen] = useState(false);
   const [letterUp, setLetterUp] = useState(false);
   const [reading, setReading] = useState(false);
@@ -91,6 +101,10 @@ export function BirthdayLetter() {
         </span>
       ))}
 
+      {showEditLink && (
+        <Link to="/criar" className="edit-link">✎ Personalizar carta</Link>
+      )}
+
       <button onClick={toggleMute} className="sound-toggle" aria-label={muted ? "Ligar som" : "Desligar som"}>
         {muted ? "🔇" : "🔊"}
       </button>
@@ -110,7 +124,7 @@ export function BirthdayLetter() {
         >
           <div className="env-back" />
           <div className="env-letter">
-            <span className="env-letter-title">Para você</span>
+            <span className="env-letter-title">{name?.trim() ? `Para ${name.trim()}` : "Para você"}</span>
             <span className="env-letter-lines" />
           </div>
           <div className="env-front" />
@@ -127,12 +141,15 @@ export function BirthdayLetter() {
         <article className="letter-paper">
           <div className="letter-ornament">✦ ✦ ✦</div>
           <h1 className="letter-title">Feliz Aniversário!</h1>
+          {name?.trim() && <p className="letter-name">{name.trim()}</p>}
           <div className="letter-body">
-            <p>Hoje o mundo ficou um pouquinho mais bonito, porque é o dia de celebrar você.</p>
-            <p>Que este novo ano venha cheio de sorrisos sinceros, abraços apertados, sonhos realizados e momentos que valham a pena guardar para sempre.</p>
-            <p>Obrigado por ser essa pessoa tão especial. Você merece todo o amor e toda a felicidade do mundo.</p>
+            {paragraphs.map((p, i) => (
+              <p key={i} style={{ animationDelay: `${1.1 + i * 0.4}s` }}>{p}</p>
+            ))}
           </div>
-          <p className="letter-sign">Com todo carinho, ♥</p>
+          <p className="letter-sign" style={{ animationDelay: `${1.3 + paragraphs.length * 0.4}s` }}>
+            {signature?.trim() || "Com todo carinho, ♥"}
+          </p>
           <button className="letter-close" onClick={close} tabIndex={reading ? 0 : -1}>
             Guardar a carta
           </button>
