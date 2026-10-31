@@ -9,6 +9,7 @@ import {
   setMuted,
   stopMelody,
 } from "@/lib/sounds";
+import type { ColorId, StyleId, ThemeId } from "@/lib/letter-search";
 
 type Confetto = { id: number; left: number; delay: number; duration: number; color: number; size: number; rotate: number; shape: "rect" | "circle" };
 
@@ -20,9 +21,33 @@ Que este novo ano venha cheio de sorrisos sinceros, abraços apertados, sonhos r
 
 Obrigado por ser essa pessoa tão especial. Você merece todo o amor e toda a felicidade do mundo.`;
 
-type Props = { name?: string | undefined; signature?: string | undefined; message?: string | undefined; showEditLink?: boolean };
+type Props = {
+  name?: string | undefined;
+  signature?: string | undefined;
+  message?: string | undefined;
+  color?: ColorId | undefined;
+  envelopeStyle?: StyleId | undefined;
+  theme?: ThemeId | undefined;
+  showEditLink?: boolean;
+};
 
-export function BirthdayLetter({ name, signature, message, showEditLink }: Props) {
+const FLOATERS: Record<ThemeId, string[]> = {
+  confetes: ["♥", "✦", "✦"],
+  coracoes: ["♥", "♡", "♥"],
+  estrelas: ["✦", "✧", "⋆"],
+  baloes: ["○", "♥", "✦"],
+};
+const PARTICLE_COUNT: Record<ThemeId, number> = { confetes: 90, coracoes: 45, estrelas: 60, baloes: 22 };
+
+export function BirthdayLetter({
+  name,
+  signature,
+  message,
+  color = "rose",
+  envelopeStyle = "classico",
+  theme = "confetes",
+  showEditLink,
+}: Props) {
   const paragraphs = (message?.trim() || DEFAULT_MESSAGE).split(/\n\s*\n/).map((p) => p.trim()).filter(Boolean);
   const [flapOpen, setFlapOpen] = useState(false);
   const [letterUp, setLetterUp] = useState(false);
@@ -48,11 +73,11 @@ export function BirthdayLetter({ name, signature, message, showEditLink }: Props
     setReading(true);
     playSparkle();
     setConfetti(
-      Array.from({ length: 90 }, (_, i) => ({
+      Array.from({ length: PARTICLE_COUNT[theme] }, (_, i) => ({
         id: Date.now() + i,
         left: Math.random() * 100,
         delay: Math.random() * 1.2,
-        duration: 3 + Math.random() * 3,
+        duration: theme === "baloes" ? 6 + Math.random() * 4 : theme === "estrelas" ? 4 + Math.random() * 4 : 3 + Math.random() * 3,
         color: (i % 5) + 1,
         size: 6 + Math.random() * 8,
         rotate: Math.random() * 360,
@@ -60,7 +85,7 @@ export function BirthdayLetter({ name, signature, message, showEditLink }: Props
       })),
     );
     timers.current.push(window.setTimeout(() => playMelody(), 700));
-    timers.current.push(window.setTimeout(() => setConfetti([]), 7000));
+    timers.current.push(window.setTimeout(() => setConfetti([]), theme === "baloes" ? 12000 : 9000));
     setBusy(false);
   };
 
@@ -88,7 +113,7 @@ export function BirthdayLetter({ name, signature, message, showEditLink }: Props
   };
 
   return (
-    <main className="scene">
+    <main className="scene" data-color={color} data-theme={theme}>
       <div className="scene-glow" aria-hidden />
       {Array.from({ length: 14 }).map((_, i) => (
         <span
@@ -97,7 +122,7 @@ export function BirthdayLetter({ name, signature, message, showEditLink }: Props
           className="floater"
           style={{ left: `${(i * 37) % 100}%`, animationDelay: `${(i * 1.3) % 9}s`, animationDuration: `${9 + (i % 5) * 2}s`, fontSize: `${12 + (i % 4) * 6}px` }}
         >
-          {i % 3 === 0 ? "♥" : "✦"}
+          {FLOATERS[theme][i % 3]}
         </span>
       ))}
 
@@ -114,6 +139,7 @@ export function BirthdayLetter({ name, signature, message, showEditLink }: Props
 
         <div
           className="envelope"
+          data-style={envelopeStyle}
           data-flap={flapOpen ? "open" : "closed"}
           data-letter={letterUp ? "up" : "down"}
           onClick={open}
@@ -128,13 +154,33 @@ export function BirthdayLetter({ name, signature, message, showEditLink }: Props
             <span className="env-letter-lines" />
           </div>
           <div className="env-front" />
+          {envelopeStyle === "correio" && (
+            <>
+              <div className="env-airmail" aria-hidden />
+              <div className="env-stamp" aria-hidden>
+                <span>♥</span>
+              </div>
+            </>
+          )}
           <div className="env-flap" />
-          <div className="env-seal" aria-hidden>
-            <span>♥</span>
-          </div>
+          {envelopeStyle === "laco" ? (
+            <div className="env-ribbon" aria-hidden>
+              <span className="env-ribbon-h" />
+              <span className="env-ribbon-v" />
+              <span className="env-bow">
+                <span className="env-bow-loop is-left" />
+                <span className="env-bow-loop is-right" />
+                <span className="env-bow-knot" />
+              </span>
+            </div>
+          ) : (
+            <div className="env-seal" aria-hidden>
+              <span>♥</span>
+            </div>
+          )}
         </div>
 
-        <p className="hint hint-small">{flapOpen ? "\u00a0" : "Toque no selo para abrir"}</p>
+        <p className="hint hint-small">{flapOpen ? "\u00a0" : envelopeStyle === "laco" ? "Toque no laço para abrir" : "Toque no selo para abrir"}</p>
       </div>
 
       <div className={`letter-overlay ${reading ? "is-open" : ""}`} aria-hidden={!reading}>
@@ -157,20 +203,26 @@ export function BirthdayLetter({ name, signature, message, showEditLink }: Props
       </div>
 
       <div className="confetti-layer" aria-hidden>
-        {confetti.map((c) => (
-          <span
-            key={c.id}
-            className={`confetto confetto-${c.color} ${c.shape === "circle" ? "is-circle" : ""}`}
-            style={{
-              left: `${c.left}%`,
-              width: c.size,
-              height: c.shape === "circle" ? c.size : c.size * 0.45,
-              animationDelay: `${c.delay}s`,
-              animationDuration: `${c.duration}s`,
-              transform: `rotate(${c.rotate}deg)`,
-            }}
-          />
-        ))}
+        {confetti.map((c) => {
+          const base = { left: `${c.left}%`, animationDelay: `${c.delay}s`, animationDuration: `${c.duration}s` };
+          if (theme === "confetes")
+            return (
+              <span
+                key={c.id}
+                className={`particle confetto c-${c.color} ${c.shape === "circle" ? "is-circle" : ""}`}
+                style={{ ...base, width: c.size, height: c.shape === "circle" ? c.size : c.size * 0.45, rotate: `${c.rotate}deg` }}
+              />
+            );
+          if (theme === "baloes")
+            return (
+              <span key={c.id} className={`particle balloon c-${c.color}`} style={{ ...base, width: c.size * 3.2, height: c.size * 3.9 }} />
+            );
+          return (
+            <span key={c.id} className={`particle glyph is-${theme} c-${c.color}`} style={{ ...base, fontSize: c.size * 2 }}>
+              {theme === "coracoes" ? (c.shape === "circle" ? "♥" : "❤") : c.shape === "circle" ? "✦" : "★"}
+            </span>
+          );
+        })}
       </div>
     </main>
   );
