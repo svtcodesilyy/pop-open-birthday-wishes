@@ -139,7 +139,7 @@ export function playMelody() {
   const beat = 0.42;
   let t = c.currentTime + 0.15;
   for (const [note, beats] of SONG) {
-    bell(c, bus, N[note], t, beats * beat * 0.9);
+    bell(c, bus, N[note] ?? 440, t, beats * beat * 0.9);
     t += beats * beat;
   }
 }
