@@ -20,7 +20,7 @@ Que este novo ano venha cheio de sorrisos sinceros, abraços apertados, sonhos r
 
 Obrigado por ser essa pessoa tão especial. Você merece todo o amor e toda a felicidade do mundo.`;
 
-type Props = { name?: string; signature?: string; message?: string; showEditLink?: boolean };
+type Props = { name?: string | undefined; signature?: string | undefined; message?: string | undefined; showEditLink?: boolean };
 
 export function BirthdayLetter({ name, signature, message, showEditLink }: Props) {
   const paragraphs = (message?.trim() || DEFAULT_MESSAGE).split(/\n\s*\n/).map((p) => p.trim()).filter(Boolean);
