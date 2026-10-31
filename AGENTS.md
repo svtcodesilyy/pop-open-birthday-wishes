@@ -8,3 +8,5 @@
 > Commits you push to the connected branch sync back to Lovable and show up in
 > the editor, so keep the branch in a working state.
 <!-- LOVABLE:END -->
+
+- Sound effects are synthesized with the Web Audio API in src/lib/sounds.ts (no audio files), so they work offline and need no assets.
