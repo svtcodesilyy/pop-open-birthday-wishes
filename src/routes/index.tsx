@@ -18,7 +18,17 @@ export const Route = createFileRoute("/")({
 });
 
 function Index() {
-  const { para, de, msg } = Route.useSearch();
-  const shared = Boolean(para || de || msg);
-  return <BirthdayLetter name={para} signature={de} message={msg} showEditLink={!shared} />;
+  const { para, de, msg, cor, estilo, tema } = Route.useSearch();
+  const shared = Boolean(para || de || msg || cor || estilo || tema);
+  return (
+    <BirthdayLetter
+      name={para}
+      signature={de}
+      message={msg}
+      color={cor}
+      envelopeStyle={estilo}
+      theme={tema}
+      showEditLink={!shared}
+    />
+  );
 }
