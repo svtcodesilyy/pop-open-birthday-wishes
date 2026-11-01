@@ -358,7 +358,6 @@
   .editor-btn:hover { transform: translateY(-2px); }
   .editor-btn-primary { background: var(--seal); color: var(--paper); }
   .editor-btn-ghost { border: 1px solid var(--seal); color: var(--seal); }
-  .editor-link { font-size: .85rem; word-break: break-all; opacity: .7; text-align: center; }
   .letter-body p { font-size: clamp(1.1rem, 3.5vw, 1.3rem); line-height: 1.6; margin-bottom: 1rem; }
   .letter-sign { font-family: var(--font-script); font-size: 2rem; color: var(--seal); margin-top: .5rem; }
   .letter-close {
