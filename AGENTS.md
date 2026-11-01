@@ -10,3 +10,4 @@
 <!-- LOVABLE:END -->
 
 - Sound effects are synthesized with the Web Audio API in src/lib/sounds.ts (no audio files), so they work offline and need no assets.
+- AI birthday-message generation streams plain text from the server route /api/generate-message (src/lib/ai/*.server.ts) so the API key and prompt stay server-side and text appears live in the editor.
