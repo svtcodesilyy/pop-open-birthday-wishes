@@ -8,8 +8,8 @@ export const Route = createFileRoute("/")({
 });
 
 function Index() {
-  const { para, de, msg, cor, estilo, tema } = Route.useSearch();
-  const shared = Boolean(para || de || msg || cor || estilo || tema);
+  const { c, para, de, msg, cor, estilo, tema } = Route.useSearch();
+  const shared = Boolean(c || para || de || msg || cor || estilo || tema);
   return (
     <BirthdayLetter
       name={para}

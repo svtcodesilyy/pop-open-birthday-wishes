@@ -1,10 +1,11 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
-import { DEFAULT_MESSAGE } from "@/components/BirthdayLetter";
+import { DEFAULT_MESSAGE, DEFAULT_SIGNATURE } from "@/lib/default-message";
 import {
   COLORS,
   STYLES,
   THEMES,
+  encodeLetterSearch,
   type ColorId,
   type StyleId,
   type ThemeId,
@@ -16,7 +17,7 @@ export const Route = createFileRoute("/criar")({
 
 function Criar() {
   const [para, setPara] = useState("");
-  const [de, setDe] = useState("Com todo carinho, ♥");
+  const [de, setDe] = useState(DEFAULT_SIGNATURE);
   const [msg, setMsg] = useState(DEFAULT_MESSAGE);
   const [cor, setCor] = useState<ColorId>("rose");
   const [estilo, setEstilo] = useState<StyleId>("classico");
@@ -33,16 +34,19 @@ function Criar() {
     estilo,
     tema,
   };
-  const link = useMemo(() => {
-    const q = new URLSearchParams();
-    if (search.para) q.set("para", search.para);
-    if (search.de) q.set("de", search.de);
-    if (search.msg) q.set("msg", search.msg);
-    q.set("cor", cor);
-    q.set("estilo", estilo);
-    q.set("tema", tema);
-    return `${baseUrl}#/?${q.toString()}`;
-  }, [baseUrl, search.para, search.de, search.msg, cor, estilo, tema]);
+  const compactSearch = useMemo(
+    () =>
+      encodeLetterSearch({
+        para: para.trim() || undefined,
+        de: de.trim() || undefined,
+        msg: msg.trim() || undefined,
+        cor,
+        estilo,
+        tema,
+      }),
+    [para, de, msg, cor, estilo, tema],
+  );
+  const link = `${baseUrl}#/?c=${compactSearch}`;
 
   const copy = async () => {
     try {

@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { Link } from "@tanstack/react-router";
+import { DEFAULT_MESSAGE, DEFAULT_SIGNATURE } from "@/lib/default-message";
 import {
   playMelody,
   playPaperRustle,
@@ -15,11 +16,7 @@ type Confetto = { id: number; left: number; delay: number; duration: number; col
 
 const wait = (ms: number) => new Promise((r) => setTimeout(r, ms));
 
-export const DEFAULT_MESSAGE = `Hoje o mundo ficou um pouquinho mais bonito, porque é o dia de celebrar você.
-
-Que este novo ano venha cheio de sorrisos sinceros, abraços apertados, sonhos realizados e momentos que valham a pena guardar para sempre.
-
-Obrigado por ser essa pessoa tão especial. Você merece todo o amor e toda a felicidade do mundo.`;
+export { DEFAULT_MESSAGE };
 
 type Props = {
   name?: string | undefined;
@@ -194,7 +191,7 @@ export function BirthdayLetter({
             ))}
           </div>
           <p className="letter-sign" style={{ animationDelay: `${1.3 + paragraphs.length * 0.4}s` }}>
-            {signature?.trim() || "Com todo carinho, ♥"}
+            {signature?.trim() || DEFAULT_SIGNATURE}
           </p>
           <button className="letter-close" onClick={close} tabIndex={reading ? 0 : -1}>
             Guardar a carta
