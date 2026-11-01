@@ -11,10 +11,10 @@ npm install
 npm run dev
 ```
 
-## Deploy from GitHub with Vercel
+## Deploy on GitHub Pages
 
-1. Import this GitHub repository at [vercel.com/new](https://vercel.com/new).
-2. Keep the default Vite build settings, or set the build command to `npm run build`.
-3. Click **Deploy**. New commits pushed to `main` will be deployed automatically.
+1. Make this repository public in **Settings → General → Danger Zone → Change repository visibility**. GitHub Pages requires a public repository on the free plan.
+2. Open **Settings → Pages** and select **GitHub Actions** as the build and deployment source.
+3. Push changes to `main`, or manually run the **Deploy to GitHub Pages** workflow from the **Actions** tab.
 
-The app uses TanStack Start and Nitro for server rendering and is configured for Vercel. No external API key is required.
+The workflow builds the static site and deploys it to `https://svtcodesilyy.github.io/pop-open-birthday-wishes/`. Shared letters and app navigation use hash-based URLs so they work on GitHub Pages without a server.

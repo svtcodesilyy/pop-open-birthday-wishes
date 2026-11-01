@@ -1,17 +1,14 @@
 import tailwindcss from "@tailwindcss/vite";
-import { tanstackStart } from "@tanstack/react-start/plugin/vite";
+import { tanstackRouter } from "@tanstack/router-plugin/vite";
 import { defineConfig } from "vite";
 import viteReact from "@vitejs/plugin-react";
-import { nitro } from "nitro/vite";
 
 export default defineConfig({
+  base: process.env["GITHUB_ACTIONS"] === "true" ? "/pop-open-birthday-wishes/" : "/",
   resolve: { tsconfigPaths: true },
   plugins: [
     tailwindcss(),
-    tanstackStart({
-      server: { entry: "server" },
-    }),
-    nitro({ preset: "vercel" }),
+    tanstackRouter({ target: "react", autoCodeSplitting: true }),
     viteReact(),
   ],
 });

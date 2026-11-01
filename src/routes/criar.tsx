@@ -11,23 +11,6 @@ import {
 } from "@/lib/letter-search";
 
 export const Route = createFileRoute("/criar")({
-  head: () => ({
-    meta: [
-      { title: "Personalizar carta de aniversário" },
-      {
-        name: "description",
-        content:
-          "Escreva o nome, a mensagem e a assinatura da sua carta de aniversário e compartilhe o link.",
-      },
-      { property: "og:title", content: "Personalizar carta de aniversário" },
-      {
-        property: "og:description",
-        content: "Crie sua carta de aniversário personalizada e compartilhe.",
-      },
-      { property: "og:type", content: "website" },
-      { name: "twitter:card", content: "summary_large_image" },
-    ],
-  }),
   component: Criar,
 });
 
@@ -38,9 +21,9 @@ function Criar() {
   const [cor, setCor] = useState<ColorId>("rose");
   const [estilo, setEstilo] = useState<StyleId>("classico");
   const [tema, setTema] = useState<ThemeId>("confetes");
-  const [origin, setOrigin] = useState("");
+  const [baseUrl, setBaseUrl] = useState("");
   const [copied, setCopied] = useState(false);
-  useEffect(() => setOrigin(window.location.origin), []);
+  useEffect(() => setBaseUrl(`${window.location.origin}${window.location.pathname}`), []);
 
   const search = {
     para: para.trim() || undefined,
@@ -58,8 +41,8 @@ function Criar() {
     q.set("cor", cor);
     q.set("estilo", estilo);
     q.set("tema", tema);
-    return `${origin}/?${q.toString()}`;
-  }, [origin, search.para, search.de, search.msg, cor, estilo, tema]);
+    return `${baseUrl}#/?${q.toString()}`;
+  }, [baseUrl, search.para, search.de, search.msg, cor, estilo, tema]);
 
   const copy = async () => {
     try {
