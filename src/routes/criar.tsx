@@ -26,14 +26,6 @@ function Criar() {
   const [copied, setCopied] = useState(false);
   useEffect(() => setBaseUrl(`${window.location.origin}${window.location.pathname}`), []);
 
-  const search = {
-    para: para.trim() || undefined,
-    de: de.trim() || undefined,
-    msg: msg.trim() || undefined,
-    cor,
-    estilo,
-    tema,
-  };
   const compactSearch = useMemo(
     () =>
       encodeLetterSearch({
@@ -150,7 +142,7 @@ function Criar() {
           </div>
         </div>
         <div className="editor-actions">
-          <Link to="/" search={search} className="editor-btn editor-btn-ghost">
+          <Link to="/" search={{ c: compactSearch }} className="editor-btn editor-btn-ghost">
             Ver prévia
           </Link>
           <button type="button" onClick={copy} className="editor-btn editor-btn-primary">
